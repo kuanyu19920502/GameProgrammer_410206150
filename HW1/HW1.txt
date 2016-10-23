@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+#info {
+  position: absolute;
+  top: 0px;
+  width: 100%;
+  padding: 10px;
+  text-align: center;
+  color: #ffff00
+}
+
+body {
+  overflow: hidden;
+}
+
+}
+</style>
+</head>
+
+<body>
+<div id="info">HW1
+  <br>pass"Z"to Start "W"to go "A"or"D"to turn left or right "S" to brakes
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r70/three.min.js"></script>
+<script src="https://dl.dropboxusercontent.com/u/3587259/Code/Threejs/OrbitControls.js">
+
+
+</script>
+<script src="https://jyunming-chen.github.io/tutsplus/js/KeyboardState.js"></script>
+
+
+<script>
+var camera, scene, renderer, geometry, material, mesh, light, controls;
+var keyboard = new KeyboardState();
+var turn = true;
+var angle = 0;
+var pos, vel, force;
+var mass = 1;
+var brakeOn = false;
+var engineOn = false;
+var turnangle = 0;
+var speed = 0;
+var clock = new THREE.Clock();
+var smoker1,smoker4,smoker3,smoker4,smoker5;
+var Aircraft = new THREE.Object3D();
+// make angle & turn 'static'
+
+init();
+animate();
+
+function init() {
+  scene = new THREE.Scene();
+
+  camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
+  camera.position.set(0, 500, 500);
+  scene.add(camera);
+  ///////////////////////////Triangle1///////////////////////////
+  var Triangle1 = new THREE.Geometry();
+  Triangle1.vertices.push(
+    new THREE.Vector3(0, 0, -30),
+    new THREE.Vector3(0, 0, 30),
+    new THREE.Vector3(0, 30, 0)
+  );
+  Triangle1.faces.push(new THREE.Face3(0, 1, 2));
+  Triangle1.computeBoundingSphere();
+  Triangle1.computeFaceNormals();
+  Triangle1.computeVertexNormals();
+  var Trimesh1 = new THREE.Mesh(Triangle1, new THREE.MeshNormalMaterial({
+    side: THREE.DoubleSide
+  }));
+  ///////////////////////////Triangle2///////////////////////////
+  var Triangle2 = new THREE.Geometry();
+  Triangle2.vertices.push(
+    new THREE.Vector3(90, 0, 0),
+    new THREE.Vector3(0, 0, -30),
+    new THREE.Vector3(0, 30, 0)
+  );
+  Triangle2.faces.push(new THREE.Face3(0, 1, 2));
+  Triangle2.computeBoundingSphere();
+  Triangle2.computeFaceNormals();
+  Triangle2.computeVertexNormals();
+  var Trimesh2 = new THREE.Mesh(Triangle2, new THREE.MeshNormalMaterial({
+    side: THREE.DoubleSide
+  }));
+  ///////////////////////////Triangle3///////////////////////////
+  var Triangle3 = new THREE.Geometry();
+  Triangle3.vertices.push(
+    new THREE.Vector3(90, 0, 0),
+    new THREE.Vector3(0, 0, 30),
+    new THREE.Vector3(0, 30, 0)
+  );
+  Triangle3.faces.push(new THREE.Face3(0, 1, 2));
+  Triangle3.computeBoundingSphere();
+  Triangle3.computeFaceNormals();
+  Triangle3.computeVertexNormals();
+  var Trimesh3 = new THREE.Mesh(Triangle3, new THREE.MeshNormalMaterial({
+    side: THREE.DoubleSide
+  }));
+  ///////////////////////////Triangle4///////////////////////////
+  var Triangle4 = new THREE.Geometry();
+  Triangle4.vertices.push(
+    new THREE.Vector4(60, 0, 0),
+    new THREE.Vector4(5, 0, 65),
+    new THREE.Vector4(5, 0, -65)
+  );
+  Triangle4.faces.push(new THREE.Face3(0, 1, 2));
+  Triangle4.computeBoundingSphere();
+  Triangle4.computeFaceNormals();
+  Triangle4.computeVertexNormals();
+  var Trimesh4 = new THREE.Mesh(Triangle4, new THREE.MeshNormalMaterial({
+    side: THREE.DoubleSide
+  }));
+    ///////////////////////////Triangle5///////////////////////////
+  var Triangle5 = new THREE.Geometry();
+  Triangle5.vertices.push(
+    new THREE.Vector4(5, 0, 0),
+    new THREE.Vector4(-15, -25, 0),
+    new THREE.Vector4(90, 0, 0)
+  );
+  Triangle5.faces.push(new THREE.Face3(0, 1, 2));
+  Triangle5.computeBoundingSphere();
+  Triangle5.computeFaceNormals();
+  Triangle5.computeVertexNormals();
+  var Trimesh5 = new THREE.Mesh(Triangle5, new THREE.MeshNormalMaterial({
+    side: THREE.DoubleSide
+  }));
+  ///////////////////////////////////////////////////////////////
+  
+  var cylinderGeometry = new THREE.CylinderGeometry (5,2,10.54,20);
+	var cylinderMaterial = new THREE.MeshNormalMaterial();
+	smoker1 = new THREE.Mesh (cylinderGeometry, cylinderMaterial);
+	smoker1.rotation.z = 1.57;
+  smoker1.position.set (0, 12, -6);
+  smoker2 = smoker1.clone();
+  smoker2.position.set (0, 12, 6);
+  smoker3 = smoker1.clone();
+  smoker3.position.set (0, 4, 12);
+  smoker4 = smoker1.clone();
+  smoker4.position.set (0, 4, 0);
+  smoker5 = smoker1.clone();
+  smoker5.position.set (0, 4, -12);
+  ////////////////////////////////////Aircraft////////////////////////////////////
+  Aircraft.add(Trimesh1);
+  Aircraft.add(Trimesh2);
+  Aircraft.add(Trimesh3);
+  Aircraft.add(Trimesh4);
+  Aircraft.add(Trimesh5);
+  Aircraft.add(smoker1);
+  Aircraft.add(smoker2);
+  Aircraft.add(smoker3);
+  Aircraft.add(smoker4);
+  Aircraft.add(smoker5);
+
+  scene.add(Aircraft);
+
+  var gridXZ = new THREE.GridHelper(500, 50);
+  gridXZ.setColors(new THREE.Color(0xff0000), new THREE.Color(0xffffff));
+  scene.add(gridXZ);
+
+  renderer = new THREE.WebGLRenderer();
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0x888888);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+  pos = new THREE.Vector3();
+  vel = new THREE.Vector3();
+  force = new THREE.Vector3();
+
+  document.body.appendChild(renderer.domElement);
+}
+
+function computeForce() {
+
+  if (!brakeOn) {
+    force = new THREE.Vector3(10, 0, 0).applyAxisAngle(new THREE.Vector3(0, 1, 0), angle - turnangle).multiplyScalar(speed);
+  } else force = new THREE.Vector3(0, 0, 0);
+
+
+  var alpha = 2.050;
+  force.add(vel.clone().multiplyScalar(-alpha));
+}
+
+function animate() {
+  controls.update();
+  keyboard.update();
+
+  computeForce();
+  var dt = clock.getDelta();
+  vel.add(force.clone().multiplyScalar(dt / mass));
+  pos.add(vel.clone().multiplyScalar(dt));
+
+  if (vel.length() > 0.001) {
+    angle = Math.atan2(-vel.z, vel.x);
+  }
+
+  Aircraft.position.copy(pos);
+  Aircraft.rotation.y = angle;
+
+  if (!engineOn) {
+    if (keyboard.down("Z")) engineOn = true;
+  }
+  if (engineOn) {
+    if (keyboard.pressed("W")) {
+      if (speed <= 100) speed = speed + dt * 50;
+    }
+    if (keyboard.pressed("S")) {
+      if (speed >= 1) {
+        speed = speed - dt * 50;
+      }
+      if (speed < 1) speed = 0;
+    }
+    if (keyboard.pressed("A")) turnangle = -(Math.PI/4);
+    if (keyboard.up("A")) turnangle = 0;
+    if (keyboard.pressed("D")) turnangle = Math.PI/4;
+    if (keyboard.up("D")) turnangle = 0;
+  }
+
+  requestAnimationFrame(animate);
+  render();
+}
+
+function render() {
+  renderer.render(scene, camera);
+}
+
+
+window.focus();
+
+</script>
+</body>
+
+</html>
