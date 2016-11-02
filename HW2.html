@@ -24,20 +24,12 @@ body {
 <script type="text/javascript">
 document.oncontextmenu=function(){return false;}
 </script>
-<<<<<<< HEAD
-
-
-=======
->>>>>>> master
 <script>
 var camera, scene, renderer;
 var satellite, angle = 0;
 var mousePoint;
 var mouse = new THREE.Vector2();
-<<<<<<< HEAD
-=======
 //var stats;
->>>>>>> master
 var pos, vel, force;
 var clock = new THREE.Clock();
 var ball;
@@ -74,25 +66,6 @@ function init() {
   camera = new THREE.OrthographicCamera(-50, 50, 80, -20, -10, 100);
   camera.position.z = 10;
   scene.add(camera);
-<<<<<<< HEAD
-
-	
-  THREE.ImageUtils.crossOrigin = '';
-  texture = THREE.ImageUtils.loadTexture('http://i.imgur.com/qnGSM0n.jpg');
-  texture.wrapS = THREE.RepeatWrapping;
-
-texture2 = THREE.ImageUtils.loadTexture('http://i.imgur.com/hAGLNAk.jpg');
-  texture2.wrapS = THREE.RepeatWrapping;
-var texMat = new THREE.MeshBasicMaterial({map: texture});
-var texMat2 = new THREE.MeshBasicMaterial({map: texture2});
-  for (var i = 0; i < 6; i++)
-{
-  var background = new THREE.Mesh(new THREE.PlaneGeometry(100, 100), texMat);
-  background.position.y = 30;
-  background.position.x = i*100;
-  scene.add (background); 
-}
-=======
  
 THREE.ImageUtils.crossOrigin = '';
 texture = THREE.ImageUtils.loadTexture('http://i.imgur.com/qnGSM0n.jpg');
@@ -112,7 +85,6 @@ var texMat2 = new THREE.MeshBasicMaterial({map: texture2});
   background.position.x = i*100;
   scene.add (background);
   }
->>>>>>> master
   
   // what's in the scene? [depth]
   // bordere (blue lines) [0]
@@ -167,15 +139,9 @@ function animate() {
     
     camera.position.x = ball.position.x;
   // force: add gravity first
-<<<<<<< HEAD
-  force = new THREE.Vector3(0, -100, 0);
-	if (pos.y <= ballR) {    // if contact, add contact force
-    force.add(new THREE.Vector3(0, 100, 0));
-=======
   force = new THREE.Vector3(0, -90, 0);
 	if (pos.y <= ballR) {    // if contact, add contact force
     force.add(new THREE.Vector3(0, 90, 0));
->>>>>>> master
 	}  
   
   // then do Euler's
@@ -231,11 +197,5 @@ function render() {
   renderer.render(scene, camera);
 }
 window.focus();
-
-
-
 </script>
 </body>
-
-</html>
-
